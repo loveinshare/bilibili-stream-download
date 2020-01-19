@@ -4,6 +4,8 @@ import requests
 import time,datetime
 from urllib import request
 import urllib
+
+#import streamlink
 def record( record_url, output_filename):
     try:
         print( '√ 正在录制...')
@@ -31,7 +33,7 @@ def record2(url, file_name):
         headers = dict()
         headers['Accept-Encoding'] = 'identity'
         headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko'
-        headers['Referer'] = re.findall(r'(https://.*\/).*\.flv', url)[0]
+        #headers['Referer'] = re.findall(r'(https://.*\/).*\.flv', url)[0]
         #res = requests.get(url, stream=True, headers=headers)
         #res = request.urlopen(url, timeout=100000,headers=headers)
         r = urllib.request.Request(url,headers=headers)
@@ -62,7 +64,7 @@ def record2(url, file_name):
 
 
 rid = 281
-#rid = 660
+rid = 65842
 
 alive = False
 while True:
@@ -78,11 +80,15 @@ while True:
             alive = True
             print("开播",datetime.datetime.now())
             eml = aEmail()                
-            eml.send("开播了")
+            #eml.send("开播了")
+            # 废弃旧的获得链接方式
             real_url = get_real_url(rid)
+            # streams = streamlink.streams("https://live.bilibili.com/"+str(rid))
+            # real_url = streams["best"].url
+            
             print(real_url)
             now = datetime.datetime.now()
-            filename ="videos/"+ "kushui"+now.strftime("_%Y_%m_%d_%H_%M_%S_%f_")+".flv"
+            filename ="videos/"+ "test"+now.strftime("_%Y_%m_%d_%H_%M_%S_%f_")+".flv"
             record2(real_url,filename)
             
     elif alive == True:

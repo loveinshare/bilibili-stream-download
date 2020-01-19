@@ -26,7 +26,8 @@ def get_real_url(rid):
             response = requests.get(url=room_url).json()
             print(response)
             durl = response.get('data').get('play_url').get('durl', 0)
-            real_url = durl[0].get('url')
+            print(len(durl))
+            real_url = durl[3].get('url')
         except:
             real_url = '疑似部分国外IP无法GET到正确数据，待验证'
     else:
