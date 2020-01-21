@@ -109,39 +109,102 @@ rid = 281
 rid = 65842
 
 alive = False
-while True:
+# while True:
+#     try:
+#         live_status, room_id = get_real_rid(rid)
+#     except:
+#         print ("bug:",datetime.datetime.now())
+#         time.sleep(10)
+#     if alive == False:
+#         if live_status == 0:
+#             print("未开播",end = "\r")
+#         else:
+#             alive = True
+#             print("开播",datetime.datetime.now())
+#             eml = aEmail()                
+#             #eml.send("开播了")
+#             # 废弃旧的获得链接方式
+#             real_url = get_real_url(rid)
+#             # streams = streamlink.streams("https://live.bilibili.com/"+str(rid))
+#             # real_url = streams["best"].url
+            
+#             print(real_url)
+#             now = datetime.datetime.now()
+#             filename ="videos/"+ "test"+now.strftime("_%Y_%m_%d_%H_%M_%S_%f_")+".flv"
+#             record2(real_url,filename)
+            
+#     elif alive == True:
+#         if live_status == 0:
+#             print("下播",datetime.datetime.now())
+#             eml = aEmail()                
+#             eml.send("下播了")
+#             alive = False
+#         else:
+#             alive = True
+#             print("直播中",end = "\r")
+            
+#     time.sleep(10)
+def record_inth(url, file_name):
+    if not url:
+        return
+
+    res = None
+    output_file = None
+
     try:
-        live_status, room_id = get_real_rid(rid)
-    except:
-        print ("bug:",datetime.datetime.now())
-        time.sleep(10)
-    if alive == False:
-        if live_status == 0:
-            print("未开播",end = "\r")
-        else:
-            alive = True
-            print("开播",datetime.datetime.now())
-            eml = aEmail()                
-            #eml.send("开播了")
-            # 废弃旧的获得链接方式
-            real_url = get_real_url(rid)
-            # streams = streamlink.streams("https://live.bilibili.com/"+str(rid))
-            # real_url = streams["best"].url
-            
-            print(real_url)
-            now = datetime.datetime.now()
-            filename ="videos/"+ "test"+now.strftime("_%Y_%m_%d_%H_%M_%S_%f_")+".flv"
-            record2(real_url,filename)
-            
-    elif alive == True:
-        if live_status == 0:
-            print("下播",datetime.datetime.now())
-            eml = aEmail()                
-            eml.send("下播了")
-            alive = False
-        else:
-            alive = True
-            print("直播中",end = "\r")
-            
-    time.sleep(10)
-    
+        headers = dict()
+        headers['Accept-Encoding'] = 'identity'
+        headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko'
+        #headers['Referer'] = re.findall(r'(https://.*\/).*\.flv', url)[0]
+        #res = requests.get(url, stream=True, headers=headers)
+        #res = request.urlopen(url, timeout=100000,headers=headers)
+        r = urllib.request.Request(url,headers=headers)
+        res = urllib.request.urlopen(r)
+        output_file = open(file_name, 'wb')
+        print('starting download from:\n%s\nto:\n%s' % (url, file_name))
+
+        size = 0
+        _buffer = res.read(1024 * 256)
+        while len(_buffer)s != 0 :
+            output_file.write(_buffer)
+            size += len(_buffer)
+            print('{:<4.2f} MB downloaded'.format(size/1024/1024),end="\r")
+            #sys.stdout.flush()
+            _buffer = res.read(1024 * 256)
+    finally:
+        print("finnally")
+        eml = aEmail()                
+        eml.send("finish"+file_name)
+        if res:
+            res.close()
+            print("res.close()")
+        if output_file:
+            output_file.close()
+            print("output_file.close()")
+
+        if os.path.isfile(file_name) and os.path.getsize(file_name) == 0:
+            os.remove(file_name)
+            print("os.remove(file_name)")
+while 1 :
+    streams = streamlink.streams("https://live.bilibili.com/"+str(rid))
+    l = ['source_alt', 'source_alt2', 'source']
+    if len(l) ==0:
+        time.sleep(5)
+        pass
+    else:
+        eml = aEmail()                
+        eml.send("开播了")
+        now = datetime.datetime.now()
+        th_list = []
+        for i in l:
+            filename ="videos/"+ "_kushui_"+l+now.strftime("_%Y_%m_%d_%H_%M_%S_%f_")+".flv"
+            print(streams[i].url)
+            t = threading.Thread(target = record_inth,args=(streams[i].url,filename))
+            t.setDaemon(True)
+            t.start()
+            th_list .append(t)
+        for t in th_list:
+            t.join    
+        
+        eml = aEmail()                
+        eml.send("all end")
