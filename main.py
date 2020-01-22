@@ -6,6 +6,7 @@ from urllib import request
 import urllib
 
 import threading
+import streamlink
 
 #import streamlink
 def record( record_url, output_filename):
@@ -85,6 +86,7 @@ def record_th(source,url, file_name):
 
         size = 0
         _buffer = res.read(1024 * 256)
+        
         while _buffer:
             output_file.write(_buffer)
             size += len(_buffer)
@@ -106,7 +108,7 @@ def record_th(source,url, file_name):
 
 
 rid = 281
-rid = 65842
+#rid = 4291425
 
 alive = False
 # while True:
@@ -165,12 +167,18 @@ def record_inth(url, file_name):
 
         size = 0
         _buffer = res.read(1024 * 256)
-        while len(_buffer)s != 0 :
-            output_file.write(_buffer)
-            size += len(_buffer)
-            print('{:<4.2f} MB downloaded'.format(size/1024/1024),end="\r")
-            #sys.stdout.flush()
-            _buffer = res.read(1024 * 256)
+        n = 0
+        while n <10 :
+            if len( _buffer) == 0:
+                n+=1
+            else:
+                n = 0
+                #print(len(_buffer))
+                output_file.write(_buffer)
+                size += len(_buffer)
+                print('{:<4.2f} MB downloaded'.format(size/1024/1024),end="\r")
+                #sys.stdout.flush()
+                _buffer = res.read(1024 * 256)
     finally:
         print("finnally")
         eml = aEmail()                
@@ -187,24 +195,29 @@ def record_inth(url, file_name):
             print("os.remove(file_name)")
 while 1 :
     streams = streamlink.streams("https://live.bilibili.com/"+str(rid))
+    link = streams.keys()
     l = ['source_alt', 'source_alt2', 'source']
-    if len(l) ==0:
+    #l = ["source"]
+    if len(link) ==0:
+        print("未开播",end = "\r")
         time.sleep(5)
         pass
     else:
         eml = aEmail()                
-        eml.send("开播了")
+        #eml.send("开播了")
+        print(link)
         now = datetime.datetime.now()
         th_list = []
         for i in l:
-            filename ="videos/"+ "_kushui_"+l+now.strftime("_%Y_%m_%d_%H_%M_%S_%f_")+".flv"
+            filename ="videos/"+ "_test_"+i+now.strftime("_%Y_%m_%d_%H_%M_%S_%f_")+".flv"
             print(streams[i].url)
             t = threading.Thread(target = record_inth,args=(streams[i].url,filename))
             t.setDaemon(True)
             t.start()
             th_list .append(t)
         for t in th_list:
-            t.join    
+            t.join()    
         
         eml = aEmail()                
         eml.send("all end")
+        print("$$$$$$$$$$$allend")
