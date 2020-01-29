@@ -15,24 +15,37 @@ from email import encoders
 from email.header import Header
 from email.utils import parseaddr, formataddr
 
+import json
 
+import os
+
+emial_status = 0
+
+if not os.path.exists("_email_config.json"):
+    print("把email_config.json改名为_email_config.json并填写相关信息\n退出")
+    raise "erro"
+
+conf = json.load(open("_email_config.json"))
 def _format_addr(s):
     name, addr = parseaddr(s)
     return formataddr((Header(name, 'utf-8').encode(), addr))
-_user = "3146464900@qq.com"
-_pwd  = "kygatiugzsijdgcc"
-_to   = "657688572@qq.com"
+_user = conf["_user"]
+_pwd  = conf["_pwd"]
+_to   = conf["_to"]
+_subject = conf["_subject"]
 
 class aEmail():
-    def __init__(self):
-        self._user = "3146464900@qq.com"
-        self._pwd  = "kygatiugzsijdgcc"
-        self._to   = "657688572@qq.com"
+    def __init__(self,_user,_pwd,_to,_subject):
+        self._user = _user
+        self._pwd  = _pwd
+        self._to   = _to
+        self._subject = _subject
+        
+    def send(self,text):
         self.s = smtplib.SMTP_SSL("smtp.qq.com", 465)
         self.s.login(self._user,self._pwd)
-    def send(self,text,subject="auto"):
         msg = MIMEText(text)
-        msg["Subject"] =subject
+        msg["Subject"] =self._subject
         msg['From'] = _format_addr('智障助手 <%s>' %self._user)
         msg['To'] = _format_addr('管理员 <%s>' % self._to)
         for i in range(20):
@@ -52,10 +65,12 @@ class aEmail():
                     traceback.print_exc()
                     print ("%s times Falied,retrying......" %i)
                     time.sleep(2)
+
+email_Sender = aEmail(_user,_pwd,_to,_subject)
+email_status = 1
 if __name__ == "__main__" :
 
-    eml = aEmail()                
-    eml.send("test")
+    pass
 #text = '1t'
 #subject = '2t'
 #a = SendEmail(text,subject)

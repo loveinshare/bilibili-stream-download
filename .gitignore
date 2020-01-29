@@ -2,4 +2,5 @@
 *.pyc
 *.pyd
 *test*
-config.json
+_config.json
+_email_config.json

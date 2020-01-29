@@ -1,4 +1,4 @@
-from _email import *
+from _email import email_Sender ,email_status
 from req import *
 import requests
 import time,datetime
@@ -99,8 +99,6 @@ def record(url, file_name):
     
     finally:
         print("finnally")
-        eml = aEmail()                
-        #eml.send("finish"+file_name)
         if res:
             res.close()
             print("res.close()")
@@ -112,13 +110,17 @@ def record(url, file_name):
             os.remove(file_name)
             print("os.remove(file_name)")
 
-rid = 281
-#rid = 4291425
-
+import json ,os
+if os.path.exists("_config.json") == None:
+    print("将config.json改名为 _config.json 并填写相关配置内容")
+    raise "erro"
+conf = json.load(open("_config.json"))
+_url = conf["_url"]
+_name = conf["_name"]
 
 while 1 :
     try:
-        streams = streamlink.streams("https://live.bilibili.com/"+str(rid))
+        streams = streamlink.streams(_url)
     except Exception as e:
         time.sleep(5)
         print(e)
@@ -131,9 +133,8 @@ while 1 :
         time.sleep(5)
         pass
     else:
-        eml = aEmail()                
-        #eml.send("开播了")
-        #print(link)
+        if email_status == 1:
+            email_Sender.send("开播了")              
         now = datetime.datetime.now()
         real_url = None
         for k,v in streams.items():
@@ -156,12 +157,12 @@ while 1 :
         if real_url == None:
             print("开播了但是没有源")
             now  = datetime.datetime.now()
-            eml = aEmail()                
-            #eml.send("开播了但是没有源")
-            email_pendding = True
+            # if email_status ==1:               
+            #     email_Sender.send("开播了但是没有源")
+            
             continue
 
-        filename ="videos/"+ "_kushui_"+now.strftime("_%Y_%m_%d_%H_%M_%S_%f_"+source+"_.flv")
+        filename ="videos/"+ _name +now.strftime("_%Y_%m_%d_%H_%M_%S_%f_"+source+"_.flv")
         #record_inth(real_url,filename)
         #request.urlretrieve(real_)
         # opener=urllib.request.build_opener()
