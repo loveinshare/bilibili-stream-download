@@ -27,7 +27,7 @@ def record(url, file_name):
 
         size = 0
         _buffer = res.read(1024 * 256)
-        while len(_buffer)s != 0 :
+        while len(_buffer) != 0 :
             output_file.write(_buffer)
             size += len(_buffer)
             print('{:<4.2f} MB downloaded'.format(size/1024/1024),end="\r")

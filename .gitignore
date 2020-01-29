@@ -1,3 +1,5 @@
 *.flv
 *.pyc
 *.pyd
+*test*
+config.json
