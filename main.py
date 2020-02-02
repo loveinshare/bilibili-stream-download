@@ -10,53 +10,6 @@ import threading
 import streamlink
 
 import sys
-#import streamlink
-
-
-def record(source,url, file_name):
-    if not url:
-        return
-
-    res = None
-    output_file = None
-
-    try:
-        headers = dict()
-        headers['Accept-Encoding'] = 'identity'
-        headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko'
-        #headers['Referer'] = re.findall(r'(https://.*\/).*\.flv', url)[0]
-        #res = requests.get(url, stream=True, headers=headers)
-        #res = request.urlopen(url, timeout=100000,headers=headers)
-        r = urllib.request.Request(url,headers=headers)
-        res = urllib.request.urlopen(r)
-        output_file = open(file_name, 'wb')
-        print('starting download from:\n%s\nto:\n%s' % (url, file_name))
-
-        size = 0
-        _buffer = res.read(1024 * 256)
-        
-        while _buffer:
-            output_file.write(_buffer)
-            size += len(_buffer)
-            print('{:<4.2f} MB downloaded'.format(size/1024/1024),end="\r")
-            #sys.stdout.flush()
-            _buffer = res.read(1024 * 256)
-    except Exception as e:
-        print(e)
-
-    finally:
-        print("finnally")
-        if res:
-            res.close()
-            print("res.close()")
-        if output_file:
-            output_file.close()
-            print("output_file.close()")
-
-        if os.path.isfile(file_name) and os.path.getsize(file_name) == 0:
-            os.remove(file_name)
-            print("os.remove(file_name)")
-
 
 
 
@@ -163,31 +116,9 @@ while 1 :
             continue
 
         filename ="videos/"+ _name +now.strftime("_%Y_%m_%d_%H_%M_%S_%f_"+source+"_.flv")
-        #record_inth(real_url,filename)
-        #request.urlretrieve(real_)
-        # opener=urllib.request.build_opener()
-        # opener.addheaders=[('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1941.0 Safari/537.36')]
-        
-        # urllib.request.install_opener(opener)
-        #urllib.request.urlretrieve(url, Path)
+
         print("开始下载\n"+real_url)
         record(real_url,filename)
-        #urllib.request.urlretrieve(real_url,filename)
-        #print("下载结束")
+            
 
-
-
-        # th_list = []
-        # for i in l:
-        #     filename ="videos/"+ "_kushui_"+i+now.strftime("_%Y_%m_%d_%H_%M_%S_%f_")+".flv"
-        #     print(streams[i].url)
-        #     t = threading.Thread(target = record_inth,args=(streams[i].url,filename))
-        #     t.setDaemon(True)
-        #     t.start()
-        #     th_list .append(t)
-        # for t in th_list:
-        #     t.join()    
-        
-        eml = aEmail()                
-        #eml.send("all end")
         print("$$$$$$$$$$$allend")
