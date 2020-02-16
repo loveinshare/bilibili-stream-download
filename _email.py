@@ -65,9 +65,11 @@ class aEmail():
                     traceback.print_exc()
                     print ("%s times Falied,retrying......" %i)
                     time.sleep(2)
-
-email_Sender = aEmail(_user,_pwd,_to,_subject)
-email_status = 1
+if _user == "":
+    email_status = 0 
+else:
+    email_Sender = aEmail(_user,_pwd,_to,_subject)
+    email_status = 1
 if __name__ == "__main__" :
 
     pass
