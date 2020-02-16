@@ -1,5 +1,4 @@
 from _email import email_Sender ,email_status
-from req import *
 import requests
 import time,datetime
 from urllib import request
