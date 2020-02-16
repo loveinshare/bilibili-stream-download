@@ -66,6 +66,7 @@ class aEmail():
                     print ("%s times Falied,retrying......" %i)
                     time.sleep(2)
 if _user == "":
+    email_Sender = None
     email_status = 0 
 else:
     email_Sender = aEmail(_user,_pwd,_to,_subject)
