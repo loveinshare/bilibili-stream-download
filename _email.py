@@ -43,33 +43,33 @@ class aEmail():
         
     def send(self,text):
         try_num = 0
-        while try_num <20
-        try:
-            try_num +=1
-            self.s = smtplib.SMTP_SSL("smtp.qq.com", 465)
-            self.s.login(self._user,self._pwd)
-            msg = MIMEText(text)
-            msg["Subject"] =self._subject
-            msg['From'] = _format_addr('智障助手 <%s>' %self._user)
-            msg['To'] = _format_addr('管理员 <%s>' % self._to)
-            for i in range(20):
-                try:
-                    self.s.sendmail(self._user, self._to, msg.as_string())
-                    # s.quit()
-                    #print("Email Sent")
-                    break
-                except :
+        while try_num <20:
+            try:
+                try_num +=1
+                self.s = smtplib.SMTP_SSL("smtp.qq.com", 465)
+                self.s.login(self._user,self._pwd)
+                msg = MIMEText(text)
+                msg["Subject"] =self._subject
+                msg['From'] = _format_addr('智障助手 <%s>' %self._user)
+                msg['To'] = _format_addr('管理员 <%s>' % self._to)
+                for i in range(20):
                     try:
-                        self.s = smtplib.SMTP_SSL("smtp.qq.com", 465)
-                        self.s.login(self._user,self._pwd)
-                        #print("重新登陆成功")
-                    except:
-                        traceback.print_exc()
-                        print("email登陆失败")
-                        traceback.print_exc()
-                        print ("%s times Falied,retrying......" %i)
-                        time.sleep(2)
-            return
+                        self.s.sendmail(self._user, self._to, msg.as_string())
+                        # s.quit()
+                        #print("Email Sent")
+                        break
+                    except :
+                        try:
+                            self.s = smtplib.SMTP_SSL("smtp.qq.com", 465)
+                            self.s.login(self._user,self._pwd)
+                            #print("重新登陆成功")
+                        except:
+                            traceback.print_exc()
+                            print("email登陆失败")
+                            traceback.print_exc()
+                            print ("%s times Falied,retrying......" %i)
+                            time.sleep(2)
+                return
             except Exception as e :
                 print(e)
                 time.sleep(5)
